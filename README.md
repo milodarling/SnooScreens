@@ -7,4 +7,4 @@ There are 5 separate Activator listeners, so you can get wallpapers from differe
 
 While Reddit Screens is a commercial tweak, it is still open source.
 
-![Settings pane](/screenshots/1.png?raw=true) ![Subreddit settings](/screenshots/2.png?raw=true) ![Activator](/screenshots/3.png?raw=true)
+![Settings pane](/screenshots/1.jpg?raw=true) ![Subreddit settings](/screenshots/2.jpg?raw=true) ![Activator](/screenshots/3.jpg?raw=true)
