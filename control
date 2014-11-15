@@ -1,7 +1,7 @@
 Package: com.milodarling.redditscreens
 Name: Reddit Screens
-Depends: mobilesubstrate
-Version: 0.0.1
+Depends: mobilesubstrate, libactivator
+Version: 1.0
 Architecture: iphoneos-arm
 Description: Set your wallpaper to an image from a subreddit!
 Maintainer: Milo Darling
