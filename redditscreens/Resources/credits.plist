@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>The Developer</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSG</string>
+			<key>cellClass</key>
+			<string>RedditScreensDevCell</string>
+			<key>height</key>
+			<string>100</string>
+			<key>detail</key>
+			<string>openMiloTwitter</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+ 			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Twitter</string>
+			<key>action</key>
+			<string>openMiloTwitter</string>
+			<key>cellClass</key>
+			<string>RSTintedCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+ 			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Reddit</string>
+			<key>action</key>
+			<string>openMiloReddit</string>
+			<key>cellClass</key>
+			<string>RSTintedCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Reddit Screens is open source!</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+ 			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Source code on GitHub</string>
+			<key>action</key>
+			<string>openGitHub</string>
+			<key>icon</key>
+			<string>github.png</string>
+			<key>cellClass</key>
+			<string>RSTintedCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Thanks</string>
+			<key>footerText</key>
+			<string>DailyPaper's code was used to implement the wallpaper saving</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>HASHBANG for DailyPaper</string>
+			<key>icon</key>
+			<string>hbang.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>The code for Faces' preference bundle was used to make this preference bundle.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Ben Rosen &amp; CPDD for Faces</string>
+			<key>icon</key>
+			<string>faces.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Alex was a very special and OP beta tester.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Alex Scott for beta testing</string>
+			<key>icon</key>
+			<string>alex.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Make the preference bundle header Comic Sans. Just for you, DomT4 &lt;3</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.milodarling.redditscreens</string>
+			<key>key</key>
+			<string>comicsans</string>
+			<key>label</key>
+			<string>Comic Sans</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>More</string>
+</dict>
+</plist>
