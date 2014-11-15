@@ -6,12 +6,12 @@ THEOS_BUILD_DIR = Packages
 
 include theos/makefiles/common.mk
 
-TWEAK_NAME = RedditScreens
-RedditScreens_FILES = Tweak.xm
-RedditScreens_FRAMEWORKS = UIKit CoreGraphics
-RedditScreens_FRAMEWORKS = UIKit CoreGraphics
-RedditScreens_PRIVATE_FRAMEWORKS = PersistentConnection PhotoLibrary SpringBoardFoundation
-RedditScreens_LDFLAGS = -lactivator
+TWEAK_NAME = SnooScreens
+SnooScreens_FILES = Tweak.xm
+SnooScreens_FRAMEWORKS = UIKit CoreGraphics
+SnooScreens_FRAMEWORKS = UIKit CoreGraphics
+SnooScreens_PRIVATE_FRAMEWORKS = PersistentConnection PhotoLibrary SpringBoardFoundation
+SnooScreens_LDFLAGS = -lactivator
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
@@ -20,5 +20,5 @@ internal-stage::
 
 after-install::
 	install.exec "killall -9 SpringBoard"
-SUBPROJECTS += redditscreens
+SUBPROJECTS += snooscreens
 include $(THEOS_MAKE_PATH)/aggregate.mk

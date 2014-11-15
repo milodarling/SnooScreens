@@ -8,9 +8,9 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Subreddit 4</string>
+			<string>Subreddit 2</string>
 			<key>footerText</key>
-			<string>Out of ideas? Try /r/spaceporn!</string>
+			<string>Here's a tip: I support mulitreddits! Try /user/CastleCorp/m/find_me_wallpapers</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -18,13 +18,13 @@
 			<key>default</key>
 			<string>/r/</string>
 			<key>defaults</key>
-			<string>com.milodarling.redditscreens</string>
+			<string>com.milodarling.snooscreens</string>
 			<key>key</key>
-			<string>sub4-subreddit</string>
+			<string>sub2-subreddit</string>
 			<key>label</key>
 			<string>Subreddit</string>
 			<key>PostNotification</key>
-			<string>com.milodarling.redditscreens/prefsChanged</string>
+			<string>com.milodarling.snooscreens/prefsChanged</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -42,7 +42,7 @@
 			<key>bundle</key>
 			<string>LibActivator</string>			
 			<key>activatorListener</key>
-			<string>com.milodarling.redditscreens.sub4</string>
+			<string>com.milodarling.snooscreens.sub2</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -56,7 +56,7 @@
 			<key>label</key>
 			<string>Set to</string>
 			<key>key</key>
-			<string>sub4-wallpaperMode</string>
+			<string>sub2-wallpaperMode</string>
 			<key>detail</key>
         	<string>PSListItemsController</string>
         	<key>validTitles</key>
@@ -74,9 +74,9 @@
         	<key>default</key>
         	<string>0</string>
     	    <key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -90,13 +90,13 @@
 	  		<key>label</key>
 	  		<string>Allow NSFW images</string>
 	  		<key>key</key>
-	  		<string>sub4-allowBoobies</string>
+	  		<string>sub2-allowBoobies</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -110,13 +110,13 @@
 	  		<key>label</key>
 	  		<string>Save photo to library</string>
 	  		<key>key</key>
-	  		<string>sub4-savePhoto</string>
+	  		<string>sub2-savePhoto</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -130,16 +130,16 @@
 	  		<key>label</key>
 	  		<string>Random image</string>
 	  		<key>key</key>
-	  		<string>sub4-random</string>
+	  		<string>sub2-random</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	</array>
 	<key>title</key>
-	<string>Subreddit 4</string>
+	<string>Subreddit 2</string>
 </dict>
 </plist>

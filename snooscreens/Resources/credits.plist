@@ -14,7 +14,7 @@
 			<key>cell</key>
 			<string>PSG</string>
 			<key>cellClass</key>
-			<string>RedditScreensDevCell</string>
+			<string>SnooScreensDevCell</string>
 			<key>height</key>
 			<string>100</string>
 			<key>detail</key>
@@ -28,7 +28,7 @@
 			<key>action</key>
 			<string>openMiloTwitter</string>
 			<key>cellClass</key>
-			<string>RSTintedCell</string>
+			<string>SSTintedCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -38,7 +38,7 @@
 			<key>action</key>
 			<string>openMiloReddit</string>
 			<key>cellClass</key>
-			<string>RSTintedCell</string>
+			<string>SSTintedCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -56,7 +56,7 @@
 			<key>icon</key>
 			<string>github.png</string>
 			<key>cellClass</key>
-			<string>RSTintedCell</string>
+			<string>SSTintedCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -114,7 +114,7 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>com.milodarling.redditscreens</string>
+			<string>com.milodarling.snooscreens</string>
 			<key>key</key>
 			<string>comicsans</string>
 			<key>label</key>

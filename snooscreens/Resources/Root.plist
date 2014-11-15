@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerCellClass</key>
-			<string>RSCustomCell</string>
+			<string>SSCustomCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -68,10 +68,10 @@
 			<key>label</key>
 			<string>More</string>
 			<key>detail</key>
-			<string>RSCreditsListController</string>
+			<string>SSCreditsListController</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>Reddit Screens</string>
+	<string>SnooScreens</string>
 </dict>
 </plist>

@@ -8,9 +8,9 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Subreddit 1</string>
+			<string>Subreddit 3</string>
 			<key>footerText</key>
-			<string>Need a suggestion? How about /r/EarthPorn?</string>
+			<string>Can't think of a subreddit? Why not /r/wallpaper?</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -18,13 +18,13 @@
 			<key>default</key>
 			<string>/r/</string>
 			<key>defaults</key>
-			<string>com.milodarling.redditscreens</string>
+			<string>com.milodarling.snooscreens</string>
 			<key>key</key>
-			<string>sub1-subreddit</string>
+			<string>sub3-subreddit</string>
 			<key>label</key>
 			<string>Subreddit</string>
 			<key>PostNotification</key>
-			<string>com.milodarling.redditscreens/prefsChanged</string>
+			<string>com.milodarling.snooscreens/prefsChanged</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -42,7 +42,7 @@
 			<key>bundle</key>
 			<string>LibActivator</string>			
 			<key>activatorListener</key>
-			<string>com.milodarling.redditscreens.sub1</string>
+			<string>com.milodarling.snooscreens.sub3</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -74,9 +74,9 @@
         	<key>default</key>
         	<string>0</string>
     	    <key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -90,13 +90,13 @@
 	  		<key>label</key>
 	  		<string>Allow NSFW images</string>
 	  		<key>key</key>
-	  		<string>sub1-allowBoobies</string>
+	  		<string>sub3-allowBoobies</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -110,13 +110,13 @@
 	  		<key>label</key>
 	  		<string>Save photo to library</string>
 	  		<key>key</key>
-	  		<string>sub1-savePhoto</string>
+	  		<string>sub3-savePhoto</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	  	<dict>
 			<key>cell</key>
@@ -130,16 +130,16 @@
 	  		<key>label</key>
 	  		<string>Random image</string>
 	  		<key>key</key>
-	  		<string>sub1-random</string>
+	  		<string>sub3-random</string>
 	  		<key>defaults</key>
-	  		<string>com.milodarling.redditscreens</string>
+	  		<string>com.milodarling.snooscreens</string>
 	  		<key>default</key>
 	  		<false/>
 	  		<key>PostNotification</key>
-	  		<string>com.milodarling.redditscreens/prefsChanged</string>
+	  		<string>com.milodarling.snooscreens/prefsChanged</string>
 	  	</dict>
 	</array>
 	<key>title</key>
-	<string>Subreddit 1</string>
+	<string>Subreddit 3</string>
 </dict>
 </plist>

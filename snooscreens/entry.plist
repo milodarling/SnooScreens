@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>title</key>
-	<string>Reddit Screens</string>
+	<string>SnooScreens</string>
 	<key>entry</key>
 	<dict>
 		<key>bundle</key>
-		<string>RedditScreens</string>
+		<string>SnooScreens</string>
 		<key>cell</key>
 		<string>PSLinkCell</string>
 		<key>detail</key>
-		<string>RedditScreensListController</string>
+		<string>SnooScreensListController</string>
 		<key>isController</key>
 		<true/>
 		<key>label</key>
-		<string>Reddit Screens</string>
+		<string>SnooScreens</string>
 		<key>icon</key>
-		<string>RedditScreens.png</string>
+		<string>SnooScreens.png</string>
 	</dict>
 </dict>
 </plist>

@@ -5,18 +5,18 @@
 #import "/usr/include/objc/runtime.h"
 #import <libactivator/libactivator.h>
 
-@interface RedditScreens : NSObject<LAListener>{
+@interface SnooScreens : NSObject<LAListener>{
     
 }
 @end
 
-static NSString *tweakName = @"Reddit Screens";
+static NSString *tweakName = @"SnooScreens";
 static NSDictionary *prefs;
-static NSString *id1 = @"com.milodarling.redditscreens.sub1";
-static NSString *id2 = @"com.milodarling.redditscreens.sub2";
-static NSString *id3 = @"com.milodarling.redditscreens.sub3";
-static NSString *id4 = @"com.milodarling.redditscreens.sub4";
-static NSString *id5 = @"com.milodarling.redditscreens.sub5";
+static NSString *id1 = @"com.milodarling.snooscreens.sub1";
+static NSString *id2 = @"com.milodarling.snooscreens.sub2";
+static NSString *id3 = @"com.milodarling.snooscreens.sub3";
+static NSString *id4 = @"com.milodarling.snooscreens.sub4";
+static NSString *id5 = @"com.milodarling.snooscreens.sub5";
 NSString *sub1;
 NSString *sub2;
 NSString *sub3;
@@ -43,7 +43,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
     return en;
 }
 
-@implementation RedditScreens
+@implementation SnooScreens
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event forListenerName:(NSString *)listenerName {
     
@@ -213,7 +213,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
 }
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName {
-    return @"Reddit Screens";
+    return @"SnooScreens";
 }
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName {
@@ -238,9 +238,9 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
 
 - (NSData *)activator:(LAActivator *)activator requiresSmallIconDataForListenerName:(NSString *)listenerName scale:(CGFloat *)scale {
     if (*scale == 1.0) {
-        return [NSData dataWithContentsOfFile:@"/Library/PreferenceBundles/RedditScreens.bundle/RedditScreens.png"];
+        return [NSData dataWithContentsOfFile:@"/Library/PreferenceBundles/SnooScreens.bundle/SnooScreens.png"];
     } else {
-        return [NSData dataWithContentsOfFile:@"/Library/PreferenceBundles/RedditScreens.bundle/RedditScreens@2x.png"];
+        return [NSData dataWithContentsOfFile:@"/Library/PreferenceBundles/SnooScreens.bundle/SnooScreens@2x.png"];
     }
 }
 
@@ -248,7 +248,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
  
  static void loadPreferences() {
      [prefs release];
-     CFStringRef appID = CFSTR("com.milodarling.redditscreens");
+     CFStringRef appID = CFSTR("com.milodarling.snooscreens");
      CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
      if (!keyList) {
          NSLog(@"[%@] There's been an error getting the key list!", tweakName);
@@ -268,11 +268,11 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
 %hook SpringBoard
 
 - (void)applicationDidFinishLaunching:(id)application {
-    if (!CFPreferencesCopyAppValue(CFSTR("hasRun"), CFSTR("com.milodarling.redditscreens"))) {
-        UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:@"Reddit Screens" message: @"Welcome to Reddit Screens! Please visit the settings to set your subreddits, activation methods, and more." delegate:nil cancelButtonTitle:@"Cool beans!" otherButtonTitles:nil];
+    if (!CFPreferencesCopyAppValue(CFSTR("hasRun"), CFSTR("com.milodarling.snooscreens"))) {
+        UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:@"SnooScreens" message: @"Welcome to SnooScreens! Please visit the settings to set your subreddits, activation methods, and more." delegate:nil cancelButtonTitle:@"Cool beans!" otherButtonTitles:nil];
         [welcomeAlert show];
         [welcomeAlert release];
-        CFPreferencesSetAppValue ( CFSTR("hasRun"), kCFBooleanTrue, CFSTR("com.milodarling.redditscreens") );
+        CFPreferencesSetAppValue ( CFSTR("hasRun"), kCFBooleanTrue, CFSTR("com.milodarling.snooscreens") );
     }
     %orig;
 }
@@ -283,7 +283,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
                                 NULL,
                                 (CFNotificationCallback)loadPreferences,
-                                CFSTR("com.milodarling.redditscreens/prefsChanged"),
+                                CFSTR("com.milodarling.snooscreens/prefsChanged"),
                                 NULL,
                                 CFNotificationSuspensionBehaviorDeliverImmediately);
     loadPreferences();

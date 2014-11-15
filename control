@@ -1,5 +1,5 @@
-Package: com.milodarling.redditscreens
-Name: Reddit Screens
+Package: org.thebigboss.snooscreens
+Name: SnooScreens
 Depends: mobilesubstrate, libactivator
 Version: 1.0
 Architecture: iphoneos-arm
@@ -7,4 +7,4 @@ Description: Set your wallpaper to an image from a subreddit!
 Maintainer: Milo Darling
 Author: Milo Darling
 Section: Tweaks
-Icon: file:///Library/PreferenceBundles/RedditScreens.bundle/RedditScreens@3x.png
+Icon: file:///Library/PreferenceBundles/SnooScreens.bundle/SnooScreens@3x.png

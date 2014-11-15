@@ -2,18 +2,18 @@
 #import <Twitter/TWTweetComposeViewController.h>
 
 static BOOL isTinted() {
-    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/dpkg/info/com.milodarling.redditscreens.list"]) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/dpkg/info/org.thebigboss.snooscreens.list"]) {
         return YES;
     }
     return NO;
 }
 
-@interface RedditScreensListController: PSListController {
+@interface SnooScreensListController: PSListController {
 }
 @end
 
-@implementation RedditScreensListController
-NSString *tweakName = @"Reddit Screens";
+@implementation SnooScreensListController
+NSString *tweakName = @"SnooScreens";
 - (id)specifiers {
 	if(_specifiers == nil) {
 		_specifiers = [[self loadSpecifiersFromPlistName:@"Root" target:self] retain];
@@ -28,29 +28,28 @@ NSString *tweakName = @"Reddit Screens";
 
 -(void)tweetSweetNothings:(id)sender {
     TWTweetComposeViewController *tweetController = [[TWTweetComposeViewController alloc] init];
-    [tweetController setInitialText:@"I downloaded #RedditScreens by @JamesIscNeutron and I love it!"];
+    [tweetController setInitialText:@"I downloaded #SnooScreens by @JamesIscNeutron and I love it!"];
     [self.navigationController presentViewController:tweetController animated:YES completion:nil];
     [tweetController release];
 }
 @end
 
-@interface RSCustomCell : PSTableCell{
+@interface SSCustomCell : PSTableCell{
     UILabel *tweakName;
     UILabel *devName;
     UILabel *piracyNotice;
 }
 @end
 
-@implementation RSCustomCell
-NSString *nameOfTweak = @"Reddit Screens";
+@implementation SSCustomCell
+NSString *nameOfTweak = @"SnooScreens";
 
 - (id)initWithSpecifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell" specifier:specifier];
     if (self) {
-        CFPreferencesAppSynchronize(CFSTR("com.milodarling.redditscreens"));
-        BOOL comicsans = !CFPreferencesCopyAppValue(CFSTR("comicsans"), CFSTR("com.milodarling.redditscreens")) ? NO : [(id)CFPreferencesCopyAppValue(CFSTR("comicsans"), CFSTR("com.milodarling.redditscreens")) boolValue];
+        CFPreferencesAppSynchronize(CFSTR("com.milodarling.snooscreens"));
+        BOOL comicsans = !CFPreferencesCopyAppValue(CFSTR("comicsans"), CFSTR("com.milodarling.snooscreens")) ? NO : [(id)CFPreferencesCopyAppValue(CFSTR("comicsans"), CFSTR("com.milodarling.snooscreens")) boolValue];
         int width = [[UIScreen mainScreen] bounds].size.width;
-        NSLog(@"[Reddit Screens] Screen width: %d", width);
         CGRect frame1 = CGRectMake(0, -10, width, 60);
         CGRect frame2 = CGRectMake(0, 30, width, 60);
         //CGRect frame3 = CGRectMake(0, 50, width, 60);
@@ -82,11 +81,11 @@ NSString *nameOfTweak = @"Reddit Screens";
         if (width<=375) {
             piracyNotice = [[UILabel alloc] initWithFrame:CGRectMake(5, 50, width-10, 80)];
             [piracyNotice setNumberOfLines:2];
-            [piracyNotice setText:[RSCustomCell label]];
+            [piracyNotice setText:[SSCustomCell label]];
         } else {
             piracyNotice = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, width-10, 60)];
             [piracyNotice setNumberOfLines:1];
-            [piracyNotice setText:[RSCustomCell label]];
+            [piracyNotice setText:[SSCustomCell label]];
         }
         if (isTinted() || comicsans) {
             piracyNotice.font = [UIFont fontWithName:@"MarkerFelt-Thin" size:15];
@@ -119,10 +118,10 @@ NSString *nameOfTweak = @"Reddit Screens";
 
 @end
 
-@interface RSCreditsListController: PSListController {
+@interface SSCreditsListController: PSListController {
 }
 @end
-@implementation RSCreditsListController
+@implementation SSCreditsListController
 
 - (id)specifiers {
     if(_specifiers == nil) {
@@ -214,18 +213,18 @@ NSString *nameOfTweak = @"Reddit Screens";
 }
 @end
 
-@interface RedditScreensDevCell : PSTableCell {
+@interface SnooScreensDevCell : PSTableCell {
     UIImageView *_background;
     UILabel *devName;
     UILabel *devRealName;
     UILabel *jobSubtitle;
 }
 @end
-@implementation RedditScreensDevCell
+@implementation SnooScreensDevCell
 
 -(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
-        UIImage *bkIm = [[UIImage alloc] initWithContentsOfFile:@"/Library/PreferenceBundles/RedditScreens.bundle/milo@2x.png"];
+        UIImage *bkIm = [[UIImage alloc] initWithContentsOfFile:@"/Library/PreferenceBundles/SnooScreens.bundle/milo@2x.png"];
         _background = [[UIImageView alloc] initWithImage:bkIm];
         _background.frame = CGRectMake(10, 15, 70, 70);
         [self addSubview:_background];
@@ -264,9 +263,9 @@ NSString *nameOfTweak = @"Reddit Screens";
 
 @end
 
-@interface RSTintedCell : PSTableCell
+@interface SSTintedCell : PSTableCell
 @end
-@implementation RSTintedCell
+@implementation SSTintedCell
 
 - (void)layoutSubviews {
     [super layoutSubviews];
