@@ -95,7 +95,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
                 isNSFW = [json[@"data"][@"children"][i][@"data"][@"over_18"] boolValue];
                 [badNumbers addObject:iInIDForm];
                 count++;
-            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) || count>=25);
+            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) && count<25);
             [badNumbers release];
         } else {
             for (int i=0; i<25; i++) {

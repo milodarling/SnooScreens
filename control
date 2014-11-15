@@ -3,7 +3,7 @@ Name: Reddit Screens
 Depends: mobilesubstrate
 Version: 0.0.1
 Architecture: iphoneos-arm
-Description: Set your wallpaper to an image from a subreddit of your choice!
+Description: Set your wallpaper to an image from a subreddit!
 Maintainer: Milo Darling
 Author: Milo Darling
 Section: Tweaks
