@@ -7,4 +7,6 @@ There are 5 separate Activator listeners, so you can get wallpapers from differe
 
 While SnooScreens is a commercial tweak, it is still open source.
 
+Special thanks to HASHBANG Productions for DailyPaper, Ben Rosen and CPDigitalDarkroom for Faces, CPDigitalDarkroom for help with the preference bundle, and uroboro for lots of stuff :)
+
 ![Settings pane](/screenshots/1.jpg?raw=true) ![Subreddit settings](/screenshots/2.jpg?raw=true) ![Activator](/screenshots/3.jpg?raw=true)
