@@ -2,6 +2,6 @@ I put the most recent deb here for users who want to "try before buying." Whethe
 
 The downside to getting it this way is you don't get the automatic updates, you'll have to do it manually. If you can buy it, and want it, then please buy it. I worked hard on this tweak, and I'd really appreciate it :)
 
-You can download the deb from [here](/trybeforebuy/org.thebigboss.snooscreens_1.0-1_iphoneos-arm.deb).
+You can download the deb from [here](/trybeforebuy/org.thebigboss.snooscreens_1.0-1_iphoneos-arm.deb?raw=true).
 
 Anyways, enjoy!
