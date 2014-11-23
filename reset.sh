@@ -1,4 +1,10 @@
-# for reseting version number so the next build is *-1
+# for cleaning stuff up to reset verison number and push to github
+if [ -f Packages/org* ];
+then
+	rm -rf ./trybeforebuy/*
+	PACKAGE=$(ls -t Packages/org* | head -1)
+	cp $PACKAGE ./trybeforebuy
+fi
 make clean
 rm .theos/packages/*
 rm .theos/last_package

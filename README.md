@@ -9,11 +9,11 @@ While SnooScreens is a commercial tweak, it is still open source.
 
 Special thanks to HASHBANG Productions for DailyPaper, Ben Rosen and CPDigitalDarkroom for Faces, CPDigitalDarkroom for help with the preference bundle, and uroboro for lots of stuff :)
 
-![Settings pane](/screenshots/1.jpg?raw=true) ![Subreddit settings](/screenshots/2.jpg?raw=true) ![Activator](/screenshots/3.jpg?raw=true)
-
 ###TODO:
 
 * Prevent duplicate photo saves (CFPreference Utils)
 * Resize images
 * Prevent downloading the same image (CFPreference Utils)
 * Skip wallpaper option (some sort of timer to keep looking if you’re not happy. I want it to be unintrusive and let the user do nothing if they’re happy with the wallpaper)
+
+![Settings pane](/screenshots/1.jpg?raw=true) ![Subreddit settings](/screenshots/2.jpg?raw=true) ![Activator](/screenshots/3.jpg?raw=true)
