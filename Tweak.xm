@@ -82,11 +82,12 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
             NSLog(@"[%@] JSON Error: %@", tweakName, jsonError);
             return;
         }
+        int arrayLength = [json[@"data"][@"children"] count];
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@random", mode]] boolValue]) {
             NSMutableArray *badNumbers = [[NSMutableArray alloc]init];
             int count = 0;
             do {
-                int i = arc4random_uniform(25);
+                int i = arc4random_uniform(arrayLength);
                 NSNumber *iInIDForm = [NSNumber numberWithInt:i];
                 if ([badNumbers containsObject:iInIDForm]) {
                     continue;
@@ -95,10 +96,10 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
                 isNSFW = [json[@"data"][@"children"][i][@"data"][@"over_18"] boolValue];
                 [badNumbers addObject:iInIDForm];
                 count++;
-            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) && count<25);
+            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) && count<arrayLength);
             [badNumbers release];
         } else {
-            for (int i=0; i<25; i++) {
+            for (int i=0; i<arrayLength; i++) {
                 imgurLink = json[@"data"][@"children"][i][@"data"][@"url"];
                 isNSFW = [json[@"data"][@"children"][i][@"data"][@"over_18"] boolValue];
                 if (([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) {
@@ -191,7 +192,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         [wallpaperViewController _savePhoto];
         
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@savePhoto", mode]] boolValue])
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+            UIImageWriteToSavedPhotosAlbum(rawImage, nil, nil, nil);
         NSLog(@"[%@] Releasing image :)", tweakName);
         [image release];
         

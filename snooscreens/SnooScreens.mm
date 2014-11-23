@@ -144,7 +144,7 @@ NSString *nameOfTweak = @"SnooScreens";
 }
 
 -(void)openGitHub {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/milodarling/RedditScreens"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/milodarling/SnooScreens"]];
 }
 
 -(void) openMiloReddit {

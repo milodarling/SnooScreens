@@ -9,14 +9,13 @@ include theos/makefiles/common.mk
 TWEAK_NAME = SnooScreens
 SnooScreens_FILES = Tweak.xm
 SnooScreens_FRAMEWORKS = UIKit CoreGraphics
-SnooScreens_FRAMEWORKS = UIKit CoreGraphics
 SnooScreens_PRIVATE_FRAMEWORKS = PersistentConnection PhotoLibrary SpringBoardFoundation
 SnooScreens_LDFLAGS = -lactivator
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 internal-stage::
-	#$(ECHO_NOTHING)ssh iphone killall -9 MobileCydia$(ECHO_END)
+	$(ECHO_NOTHING)ssh iphone killcydia$(ECHO_END)
 
 after-install::
 	install.exec "killall -9 SpringBoard"
