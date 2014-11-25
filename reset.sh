@@ -1,7 +1,7 @@
 # for cleaning stuff up to reset verison number and push to github
 if [ -f Packages/org* ];
 then
-	rm -rf ./trybeforebuy/*
+	rm -rf ./trybeforebuy/org*
 	PACKAGE=$(ls -t Packages/org* | head -1)
 	cp $PACKAGE ./trybeforebuy
 fi

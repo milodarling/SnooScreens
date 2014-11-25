@@ -4,6 +4,7 @@
 #import <UIKit/UIKit.h>
 #import "/usr/include/objc/runtime.h"
 #import <libactivator/libactivator.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface SnooScreens : NSObject<LAListener>{
     
@@ -17,14 +18,14 @@ static NSString *id2 = @"com.milodarling.snooscreens.sub2";
 static NSString *id3 = @"com.milodarling.snooscreens.sub3";
 static NSString *id4 = @"com.milodarling.snooscreens.sub4";
 static NSString *id5 = @"com.milodarling.snooscreens.sub5";
-NSString *sub1;
-NSString *sub2;
-NSString *sub3;
-NSString *sub4;
-NSString *sub5;
-PLWallpaperMode wallpaperMode;
-NSString *imgurLink;
-BOOL isNSFW;
+static NSString *sub1;
+static NSString *sub2;
+static NSString *sub3;
+static NSString *sub4;
+static NSString *sub5;
+static PLWallpaperMode wallpaperMode;
+static NSString *imgurLink;
+static BOOL isNSFW;
 
 
 static inline unsigned char FPWListenerName(NSString *listenerName) {
@@ -83,6 +84,19 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
             return;
         }
         int arrayLength = [json[@"data"][@"children"] count];
+        if (arrayLength == 0) {
+            UIAlertView *noSubredditAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@", tweakName]
+                                                             message:@"It appears the subreddit you've entered doesn't exist."
+                                                            delegate:self
+                                                   cancelButtonTitle:@"Ok"
+                                                   otherButtonTitles:nil];
+            [noSubredditAlert performSelector:@selector(show)
+                           onThread:[NSThread mainThread]
+                         withObject:nil
+                      waitUntilDone:NO];
+            [noSubredditAlert release];
+            return;
+        }
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@random", mode]] boolValue]) {
             NSMutableArray *badNumbers = [[NSMutableArray alloc]init];
             int count = 0;
@@ -136,7 +150,12 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
             finalLink = imgurLink;
         }
         NSLog(@"[%@] Link: %@", tweakName, finalLink);
-    
+        if ([[prefs objectForKey:@"currentWallpaper"] isEqualToString:finalLink]) {
+            NSLog(@"[SnooScreens] Exiting because we already have this wallpaper");
+            return;
+        }
+        CFPreferencesSetAppValue(CFSTR("currentWallpaper"), finalLink, CFSTR("com.milodarling.snooscreens"));
+        CFNotificationCenterPostNotification ( CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.milodarling.snooscreens/prefsChanged"), NULL, NULL, true );
         NSURL *url = [NSURL URLWithString:finalLink];
         NSLog(@"[%@] URL: %@", tweakName, url);
         
@@ -177,24 +196,32 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         }
     
         CGImageRef imageRef = CGImageCreateWithImageInRect([rawImage CGImage], rect);
-        UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
+        UIImage *image = [[[UIImage alloc] initWithCGImage:imageRef] autorelease];
         CGImageRelease(imageRef);
     
         //SET WALLPAPER
         //isRunning = YES;
-        
+        NSLog(@"[SnooScreens] Setting wallpaper");
         PLStaticWallpaperImageViewController *wallpaperViewController = [[[PLStaticWallpaperImageViewController alloc] initWithUIImage:image] autorelease];
+        //[wallpaperViewController setWallpaperPreviewViewController:
         wallpaperViewController.saveWallpaperData = YES;
         
         uintptr_t address = (uintptr_t)&wallpaperMode;
         object_setInstanceVariable(wallpaperViewController, "_wallpaperMode", *(PLWallpaperMode **)address);
         
+        //[wallpaperViewController setUpWallpaperPreview];
         [wallpaperViewController _savePhoto];
         
-        if ([[prefs objectForKey:[NSString stringWithFormat:@"%@savePhoto", mode]] boolValue])
+        if ([[prefs objectForKey:[NSString stringWithFormat:@"%@savePhoto", mode]] boolValue]) {
             UIImageWriteToSavedPhotosAlbum(rawImage, nil, nil, nil);
-        NSLog(@"[%@] Releasing image :)", tweakName);
-        [image release];
+            //[[[%c(ALAssetsLibrary) alloc] init] ALAssetOrientation:[image CGImage] toAlbum:@"SnooScreens" withCompletionBlock:^(NSError *error) {
+                //if (error!=nil) {
+                //    NSLog(@"[SnooScreens] Error saving photo: %@", [error description]);
+                //}
+            //}];
+        }
+        //NSLog(@"[%@] Releasing image :)", tweakName);
+        //[image release];
         
         //isRunning = NO;
         
