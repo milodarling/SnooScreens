@@ -60,7 +60,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         //PARSE URL
         subreddit = [subreddit stringByReplacingOccurrencesOfString:@" " withString:@""];
         NSLog(@"[%@] Subreddit: %@", tweakName, subreddit);
-        NSURL *blogURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.reddit.com%@.json", subreddit]];
+        NSURL *blogURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.reddit.com%@.json", subreddit]];
         NSError *jsonDataError = nil;
         NSData *jsonData = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:blogURL] returningResponse:nil error:&jsonDataError];
         if (jsonDataError) {
