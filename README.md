@@ -11,12 +11,13 @@ Special thanks to HASHBANG Productions for DailyPaper, Ben Rosen and CPDigitalDa
 
 ###TODO:
 
-* Prevent duplicate photo saves (CFPreference Utils) - biggest hoop: what if they change the wallpaper on their own in between?
+* ~~Prevent duplicate photo saves (CFPreference Utils) - biggest hoop: what if they change the wallpaper on their own in between?~~
 * Resize images
-* Prevent downloading the same image (CFPreference Utils)
+* ~~Prevent downloading the same image (CFPreference Utils)~~
 * Skip wallpaper option (some sort of timer to keep looking if you’re not happy. I want it to be unintrusive and let the user do nothing if they’re happy with the wallpaper)
 * Bring up wallpaper view (Look into [SBSUIWallpaperPreviewViewController](http://developer.limneos.net/index.php?ios=8.0&framework=SpringBoardUIServices.framework&header=SBSUIWallpaperPreviewViewController.h) and [PLWallpaperImageViewController](http://developer.limneos.net/index.php?ios=8.0&framework=PhotoLibrary.framework&header=PLWallpaperImageViewController.h)).
 * Save into a specific album.
+* ~~Individual save wallpaper button~~
 
 ![Settings pane](/screenshots/1.jpg?raw=true) ![Subreddit settings](/screenshots/2.jpg?raw=true) ![Activator](/screenshots/3.jpg?raw=true)
 
