@@ -1,5 +1,7 @@
 #import <Preferences/Preferences.h>
-#import <Twitter/TWTweetComposeViewController.h>
+#import <Social/SLComposeViewController.h>
+#import <Social/SLServiceTypes.h>
+#define IS_OS_7_OR_UNDER [[[UIDevice currentDevice] systemVersion] floatValue] < 8.0
 
 static BOOL isTinted() {
     if (![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/dpkg/info/org.thebigboss.snooscreens.list"]) {
@@ -27,11 +29,51 @@ NSString *tweakName = @"SnooScreens";
 }
 
 -(void)tweetSweetNothings:(id)sender {
-    TWTweetComposeViewController *tweetController = [[TWTweetComposeViewController alloc] init];
-    [tweetController setInitialText:@"I downloaded #SnooScreens by @JamesIscNeutron and I love it!"];
-    [self.navigationController presentViewController:tweetController animated:YES completion:nil];
-    [tweetController release];
+    SLComposeViewController *composeController = [SLComposeViewController
+                                                  composeViewControllerForServiceType:SLServiceTypeTwitter];
+    [composeController setInitialText:@"I downloaded #SnooScreens by @JamesIscNeutron and I love it!"];
+    [self presentViewController:composeController
+                       animated:YES completion:nil];
 }
+
+-(void)saveWallpaper {
+    NSString *link;
+    if (IS_OS_7_OR_UNDER) {
+        NSString *settingsPath = @"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist";
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
+        link = [prefs objectForKey:@"currentWallpaper"];
+    } else {
+        CFPreferencesAppSynchronize(CFSTR("com.milodarling.snooscreens"));
+        link = (id)CFPreferencesCopyAppValue(CFSTR("currentWallpaper"), CFSTR("com.milodarling.snooscreens"));
+    }
+    if (!link) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"SnooScreens"
+                                                        message:[NSString stringWithFormat:@"You don't have a wallpaper link saved! This means that you last used this on an older version that did not yet support this feature. After setting another wallpaper with SnooScreens, this feature should work."]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        return;
+    }
+    NSURL *url = [NSURL URLWithString:link];
+    NSError *imageError = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:&imageError];
+    if (imageError) {
+        NSLog(@"[%@] Error downloading image: %@", tweakName, imageError);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"SnooScreens"
+                                                         message:[NSString stringWithFormat:@"There was an error downloading the image %@ from imgur. Perhaps imgur is blocked on your Internet connection?", url]
+                                                        delegate:self
+                                               cancelButtonTitle:@"Ok"
+                                               otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        return;
+    }
+    UIImage *rawImage = [UIImage imageWithData:data];
+    UIImageWriteToSavedPhotosAlbum(rawImage, nil, nil, nil);
+}
+
 @end
 
 @interface SSCustomCell : PSTableCell{
@@ -269,7 +311,7 @@ NSString *nameOfTweak = @"SnooScreens";
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.textLabel.textColor = [UIColor grayColor];
+    self.textLabel.textColor = [UIColor colorWithRed:48.0f/255.0f green:56.0f/255.0f blue:103.0f/255.0f alpha:1.0];
 }
 
 @end

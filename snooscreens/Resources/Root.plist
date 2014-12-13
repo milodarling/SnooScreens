@@ -18,7 +18,7 @@
 		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Subreddit 1</string>
 			<key>detail</key>
@@ -26,7 +26,7 @@
 		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Subreddit 2</string>
 			<key>detail</key>
@@ -34,7 +34,7 @@
 		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Subreddit 3</string>
 			<key>detail</key>
@@ -42,7 +42,7 @@
 		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Subreddit 4</string>
 			<key>detail</key>
@@ -50,21 +50,37 @@
 		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>Subreddit 5</string>
 			<key>detail</key>
 			<string>Sub5ListController</string>
 		</dict>
-	  	<dict>
-	  		<key>cell</key>
-	  		<string>PSGroupCell</string>
-	  		<key>footerText</key>
-	  		<string>Credits, thanks, and more</string>
-	  	</dict>
+		<dict>
+			<key>footerText</key>
+			<string>Saves the wallpaper you currently have set</string>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>SSTintedCell</string>
+			<key>label</key>
+			<string>Save Wallpaper</string>
+			<key>action</key>
+			<string>saveWallpaper</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+		</dict>
 		<dict>
 			<key>cell</key>
- 			<string>PSLinkListCell</string>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Credits, thanks, and more</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
 			<key>label</key>
 			<string>More</string>
 			<key>detail</key>

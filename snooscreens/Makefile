@@ -7,7 +7,7 @@ include theos/makefiles/common.mk
 BUNDLE_NAME = SnooScreens
 SnooScreens_FILES = SnooScreens.mm
 SnooScreens_INSTALL_PATH = /Library/PreferenceBundles
-SnooScreens_FRAMEWORKS = UIKit Twitter
+SnooScreens_FRAMEWORKS = UIKit Social
 SnooScreens_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk

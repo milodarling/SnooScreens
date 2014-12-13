@@ -5,6 +5,9 @@
 #import "/usr/include/objc/runtime.h"
 #import <libactivator/libactivator.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "DebugLog.h"
+
+#define IS_OS_7_OR_UNDER [[[UIDevice currentDevice] systemVersion] floatValue] < 8.0
 
 @interface SnooScreens : NSObject<LAListener>{
     
@@ -38,10 +41,34 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         en = 2;
     } else if ([listenerName isEqualToString:id4]) {
         en = 3;
-    } else if ([listenerName isEqualToString:id5]) {
+    } else {
         en = 4;
     }
     return en;
+}
+
+static void loadPreferences() {
+    if(prefs) [prefs release];
+    if (IS_OS_7_OR_UNDER) {
+        NSString *settingsPath = @"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist";
+        prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
+    } else {
+        CFStringRef appID = CFSTR("com.milodarling.snooscreens");
+        CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+        if (!keyList) {
+            NSLog(@"[%@] There's been an error getting the key list!", tweakName);
+            return;
+        }
+        prefs = (NSDictionary *)CFPreferencesCopyMultiple(keyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+    }
+    if (!prefs) {
+        NSLog(@"[%@] There's been an error getting the preferences dictionary!", tweakName);
+    }
+    sub1 = [prefs objectForKey:@"sub1-subreddit"] ?: @"No subreddit chosen";
+    sub2 = [prefs objectForKey:@"sub2-subreddit"] ?: @"No subreddit chosen";
+    sub3 = [prefs objectForKey:@"sub3-subreddit"] ?: @"No subreddit chosen";
+    sub4 = [prefs objectForKey:@"sub4-subreddit"] ?: @"No subreddit chosen";
+    sub5 = [prefs objectForKey:@"sub5-subreddit"] ?: @"No subreddit chosen";
 }
 
 @implementation SnooScreens
@@ -98,7 +125,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
             return;
         }
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@random", mode]] boolValue]) {
-            NSMutableArray *badNumbers = [[NSMutableArray alloc]init];
+            NSMutableArray *badNumbers = [[NSMutableArray alloc] init];
             int count = 0;
             do {
                 int i = arc4random_uniform(arrayLength);
@@ -110,13 +137,13 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
                 isNSFW = [json[@"data"][@"children"][i][@"data"][@"over_18"] boolValue];
                 [badNumbers addObject:iInIDForm];
                 count++;
-            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) && count<arrayLength);
+            } while (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies) && ![[prefs objectForKey:@"currentRedditLink"] isEqualToString:imgurLink]) && count<arrayLength);
             [badNumbers release];
         } else {
             for (int i=0; i<arrayLength; i++) {
                 imgurLink = json[@"data"][@"children"][i][@"data"][@"url"];
                 isNSFW = [json[@"data"][@"children"][i][@"data"][@"over_18"] boolValue];
-                if (([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies)) {
+                if (([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies) && ![[prefs objectForKey:@"currentRedditLink"] isEqualToString:imgurLink]) {
                     break;
                 }
             }
@@ -135,7 +162,10 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
             [alert2 release];
             return;
         }
-    
+        //save as a preference so we don't reuse the same image.
+        [self setPreferenceObject:imgurLink forKey:@"currentRedditLink"];
+        DebugLogC(@"Final link: %@", [prefs objectForKey:@"currentRedditLink"]);
+        
         //Convert imgur.com links to i.imgur.com
         NSString *finalLink = @"";
         if ([imgurLink rangeOfString:@"i.imgur.com"].location == NSNotFound) {
@@ -149,17 +179,10 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         } else {
             finalLink = imgurLink;
         }
-        NSLog(@"[%@] Link: %@", tweakName, finalLink);
-        if ([[prefs objectForKey:@"currentWallpaper"] isEqualToString:finalLink]) {
-            NSLog(@"[SnooScreens] Exiting because we already have this wallpaper");
-            return;
-        }
-        CFPreferencesSetAppValue(CFSTR("currentWallpaper"), finalLink, CFSTR("com.milodarling.snooscreens"));
-        CFNotificationCenterPostNotification ( CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.milodarling.snooscreens/prefsChanged"), NULL, NULL, true );
+        DebugLogC(@"Link: %@", finalLink);
         NSURL *url = [NSURL URLWithString:finalLink];
-        NSLog(@"[%@] URL: %@", tweakName, url);
-        
-    
+        DebugLogC(@"URL: %@", url);
+        [self setPreferenceObject:finalLink forKey:@"currentWallpaper"];
         //DOWNLOAD IMAGE
         NSError *imageError = nil;
         NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:&imageError];
@@ -226,6 +249,7 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
         //isRunning = NO;
         
         //completion(nil);
+        loadPreferences();
     });
     
 }
@@ -272,37 +296,35 @@ static inline unsigned char FPWListenerName(NSString *listenerName) {
     }
 }
 
+-(void)setPreferenceObject:(NSString *)object forKey:(NSString *)key {
+    if (IS_OS_7_OR_UNDER) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist"];
+        [dict setObject:object forKey:key];
+        [dict writeToFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist" atomically:YES];
+    } else {
+        CFPreferencesSetAppValue((__bridge CFStringRef)key, object, CFSTR("com.milodarling.snooscreens"));
+    }
+}
+
 @end
- 
- static void loadPreferences() {
-     [prefs release];
-     CFStringRef appID = CFSTR("com.milodarling.snooscreens");
-     CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-     if (!keyList) {
-         NSLog(@"[%@] There's been an error getting the key list!", tweakName);
-         return;
-     }
-     prefs = (NSDictionary *)CFPreferencesCopyMultiple(keyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-     if (!prefs) {
-         NSLog(@"[%@] There's been an error getting the preferences dictionary!", tweakName);
-     }
-     sub1 = [prefs objectForKey:@"sub1-subreddit"] ?: @"No subreddit chosen";
-     sub2 = [prefs objectForKey:@"sub2-subreddit"] ?: @"No subreddit chosen";
-     sub3 = [prefs objectForKey:@"sub3-subreddit"] ?: @"No subreddit chosen";
-     sub4 = [prefs objectForKey:@"sub4-subreddit"] ?: @"No subreddit chosen";
-     sub5 = [prefs objectForKey:@"sub5-subreddit"] ?: @"No subreddit chosen";
- }
 
 %hook SpringBoard
 
 - (void)applicationDidFinishLaunching:(id)application {
-    if (!CFPreferencesCopyAppValue(CFSTR("hasRun"), CFSTR("com.milodarling.snooscreens"))) {
+    %orig;
+    loadPreferences();
+    if (![prefs objectForKey:@"hasRun"]) {
         UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:@"SnooScreens" message: @"Welcome to SnooScreens! Please visit the settings to set your subreddits, activation methods, and more." delegate:nil cancelButtonTitle:@"Cool beans!" otherButtonTitles:nil];
         [welcomeAlert show];
         [welcomeAlert release];
-        CFPreferencesSetAppValue ( CFSTR("hasRun"), kCFBooleanTrue, CFSTR("com.milodarling.snooscreens") );
+        if (IS_OS_7_OR_UNDER) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist"];
+            [dict setObject:@YES forKey:@"hasRun"];
+            [dict writeToFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist" atomically:YES];
+        } else {
+            CFPreferencesSetAppValue ( CFSTR("hasRun"), kCFBooleanTrue, CFSTR("com.milodarling.snooscreens") );
+        }
     }
-    %orig;
 }
 
 %end
