@@ -468,6 +468,11 @@ NSString *tweakName = @"SnooScreens";
     return _specifiers;
 }
 
+-(void)viewWillDisappear:(BOOL)animated {
+    [self.view endEditing:YES];
+    [super viewWillDisappear:animated];
+}
+
 -(id) readPreferenceValue:(PSSpecifier*)specifier {
     NSDictionary *exampleTweakSettings = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
     if (!exampleTweakSettings[specifier.properties[@"key"]]) {
