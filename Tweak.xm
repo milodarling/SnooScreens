@@ -5,94 +5,68 @@
 #import "/usr/include/objc/runtime.h"
 #import <libactivator/libactivator.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#define DEBUG
 #import "DebugLog.h"
 
-#define IS_OS_7_OR_UNDER [[[UIDevice currentDevice] systemVersion] floatValue] < 8.0
-
 @interface SnooScreens : NSObject<LAListener>{
-    
+    int listenerCount;
+    PLWallpaperMode wallpaperMode;
+    NSString *imgurLink;
+    BOOL isNSFW;
 }
 @end
 
-static NSString *tweakName = @"SnooScreens";
-static NSDictionary *prefs;
-static NSString *id1 = @"com.milodarling.snooscreens.sub1";
-static NSString *id2 = @"com.milodarling.snooscreens.sub2";
-static NSString *id3 = @"com.milodarling.snooscreens.sub3";
-static NSString *id4 = @"com.milodarling.snooscreens.sub4";
-static NSString *id5 = @"com.milodarling.snooscreens.sub5";
-static NSString *sub1;
-static NSString *sub2;
-static NSString *sub3;
-static NSString *sub4;
-static NSString *sub5;
-static PLWallpaperMode wallpaperMode;
-static NSString *imgurLink;
-static BOOL isNSFW;
+SnooScreens *listener;
+
+static NSString *const settingsPath = @"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist";
+static NSString *const tweakName = @"SnooScreens";
+//static NSDictionary *prefs;
 
 
-static inline unsigned char FPWListenerName(NSString *listenerName) {
-    unsigned char en;
-    if ([listenerName isEqualToString:id1]) {
-        en = 0;
-    } else if ([listenerName isEqualToString:id2]) {
-        en = 1;
-    } else if ([listenerName isEqualToString:id3]) {
-        en = 2;
-    } else if ([listenerName isEqualToString:id4]) {
-        en = 3;
-    } else {
-        en = 4;
-    }
+
+
+static inline int FPWListenerName(NSString *listenerName) {
+    int en;
+    en = [[listenerName substringFromIndex:31] intValue];
     return en;
-}
-
-static void loadPreferences() {
-    if(prefs) [prefs release];
-    if (IS_OS_7_OR_UNDER) {
-        NSString *settingsPath = @"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist";
-        prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
-    } else {
-        CFStringRef appID = CFSTR("com.milodarling.snooscreens");
-        CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-        if (!keyList) {
-            NSLog(@"[%@] There's been an error getting the key list!", tweakName);
-            return;
-        }
-        prefs = (NSDictionary *)CFPreferencesCopyMultiple(keyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-    }
-    if (!prefs) {
-        NSLog(@"[%@] There's been an error getting the preferences dictionary!", tweakName);
-    }
-    sub1 = [prefs objectForKey:@"sub1-subreddit"] ?: @"No subreddit chosen";
-    sub2 = [prefs objectForKey:@"sub2-subreddit"] ?: @"No subreddit chosen";
-    sub3 = [prefs objectForKey:@"sub3-subreddit"] ?: @"No subreddit chosen";
-    sub4 = [prefs objectForKey:@"sub4-subreddit"] ?: @"No subreddit chosen";
-    sub5 = [prefs objectForKey:@"sub5-subreddit"] ?: @"No subreddit chosen";
 }
 
 @implementation SnooScreens
 
+-(id)init {
+    if (self=[super init]) {
+        listenerCount = 0;
+        [self updateListeners];
+    }
+    return self;
+}
+
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event forListenerName:(NSString *)listenerName {
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
         //COLLECT PREFERENCES ETC
-        unsigned char en = FPWListenerName(listenerName);
-        NSString *subreddits[5] = { @"sub1-", @"sub2-", @"sub3-", @"sub4-", @"sub5-" };
-        NSString *mode = subreddits[en];
+        int en = FPWListenerName(listenerName);
+        NSString *mode = [NSString stringWithFormat:@"sub%d-", en];
+        NSNumber *obj = [prefs objectForKey:[NSString stringWithFormat:@"%@enabled", mode]];
+        BOOL enabled = obj ? [obj boolValue] : YES;
+        if (!enabled) {
+            [event setHandled:NO];
+            return;
+        }
+        [event setHandled:YES];
         NSString *subreddit = [prefs objectForKey:[NSString stringWithFormat:@"%@subreddit", mode]] ?: @"No subreddit chosen";
-        BOOL allowBoobies = [prefs objectForKey:[NSString stringWithFormat:@"%@allowBoobies", mode]] ? [[prefs objectForKey:[NSString stringWithFormat:@"%@allowBoobies", mode]] boolValue] : NO;
+        BOOL allowBoobies = [[prefs objectForKey:[NSString stringWithFormat:@"%@allowBoobies", mode]] boolValue];
         wallpaperMode = [[prefs objectForKey:[NSString stringWithFormat:@"%@wallpaperMode", mode]] intValue] ?: 0;
     
         //PARSE URL
         subreddit = [subreddit stringByReplacingOccurrencesOfString:@" " withString:@""];
-        NSLog(@"[%@] Subreddit: %@", tweakName, subreddit);
+        DebugLogC(@"Subreddit: %@", subreddit);
         NSURL *blogURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.reddit.com%@.json", subreddit]];
         NSError *jsonDataError = nil;
         NSData *jsonData = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:blogURL] returningResponse:nil error:&jsonDataError];
         if (jsonDataError) {
-            NSLog(@"[%@] Error downloading json data: %@", tweakName, jsonDataError);
-            UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@", tweakName]
+            DebugLogC(@"Error downloading json data: %@", jsonDataError);
+            UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"SnooScreens"
                                                              message:@"We couldn't get the image :(. Perhaps you've typed in a subreddit incorrectly, or you're not connected to the internet?"
                                                             delegate:self
                                                    cancelButtonTitle:@"Ok"
@@ -112,7 +86,7 @@ static void loadPreferences() {
         }
         int arrayLength = [json[@"data"][@"children"] count];
         if (arrayLength == 0) {
-            UIAlertView *noSubredditAlert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@", tweakName]
+            UIAlertView *noSubredditAlert = [[UIAlertView alloc] initWithTitle:@"SnooScreens"
                                                              message:@"It appears the subreddit you've entered doesn't exist."
                                                             delegate:self
                                                    cancelButtonTitle:@"Ok"
@@ -223,25 +197,17 @@ static void loadPreferences() {
         CGImageRelease(imageRef);
     
         //SET WALLPAPER
-        //isRunning = YES;
         NSLog(@"[SnooScreens] Setting wallpaper");
         PLStaticWallpaperImageViewController *wallpaperViewController = [[[PLStaticWallpaperImageViewController alloc] initWithUIImage:image] autorelease];
-        //[wallpaperViewController setWallpaperPreviewViewController:
         wallpaperViewController.saveWallpaperData = YES;
         
         uintptr_t address = (uintptr_t)&wallpaperMode;
         object_setInstanceVariable(wallpaperViewController, "_wallpaperMode", *(PLWallpaperMode **)address);
         
-        //[wallpaperViewController setUpWallpaperPreview];
         [wallpaperViewController _savePhoto];
         
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@savePhoto", mode]] boolValue]) {
             UIImageWriteToSavedPhotosAlbum(rawImage, nil, nil, nil);
-            //[[[%c(ALAssetsLibrary) alloc] init] ALAssetOrientation:[image CGImage] toAlbum:@"SnooScreens" withCompletionBlock:^(NSError *error) {
-                //if (error!=nil) {
-                //    NSLog(@"[SnooScreens] Error saving photo: %@", [error description]);
-                //}
-            //}];
         }
         //NSLog(@"[%@] Releasing image :)", tweakName);
         //[image release];
@@ -249,19 +215,9 @@ static void loadPreferences() {
         //isRunning = NO;
         
         //completion(nil);
-        loadPreferences();
+        [self loadPrefs];
     });
     
-}
-
-+(void)load {
-    NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-    [[LAActivator sharedInstance] registerListener:[self new] forName:id1];
-    [[LAActivator sharedInstance] registerListener:[self new] forName:id2];
-    [[LAActivator sharedInstance] registerListener:[self new] forName:id3];
-    [[LAActivator sharedInstance] registerListener:[self new] forName:id4];
-    [[LAActivator sharedInstance] registerListener:[self new] forName:id5];
-    [p release];
 }
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName {
@@ -270,14 +226,13 @@ static void loadPreferences() {
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedTitleForListenerName:(NSString *)listenerName {
     int en = FPWListenerName(listenerName);
-    NSString *title[5] = { @"Subreddit 1", @"Subreddit 2", @"Subreddit 3", @"Subreddit 4", @"Subreddit 5" };
-    return title[en];
+    return [NSString stringWithFormat:@"Subreddit %d", en];
 }
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedDescriptionForListenerName:(NSString *)listenerName {
     int en = FPWListenerName(listenerName);
-    NSString *title[5] = { sub1, sub2, sub3, sub4, sub5 };
-    return title[en];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
+    return [prefs objectForKey:[NSString stringWithFormat:@"sub%d-subreddit", en]] ?: @"No subreddit chosen";
 }
 
 - (NSArray *)activator:(LAActivator *)activator requiresCompatibleEventModesForListenerWithName:(NSString *)listenerName {
@@ -296,45 +251,53 @@ static void loadPreferences() {
     }
 }
 
--(void)setPreferenceObject:(NSString *)object forKey:(NSString *)key {
-    if (IS_OS_7_OR_UNDER) {
-        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist"];
-        [dict setObject:object forKey:key];
-        [dict writeToFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist" atomically:YES];
-    } else {
-        CFPreferencesSetAppValue((__bridge CFStringRef)key, object, CFSTR("com.milodarling.snooscreens"));
+-(void)setPreferenceObject:(id)object forKey:(NSString *)key {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:settingsPath];
+    [dict setObject:object forKey:key];
+    [dict writeToFile:settingsPath atomically:YES];
+}
+
+-(void)updateListeners {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    if (listenerCount) {
+        for (int i=1; i<=listenerCount; i++) {
+            [[LAActivator sharedInstance] unregisterListenerWithName:[NSString stringWithFormat:@"com.milodarling.snooscreens.sub%d", i]];
+        }
     }
+    [self loadPrefs]; //gets new count value
+    for (int i=1; i<=listenerCount; i++) {
+        [[LAActivator sharedInstance] registerListener:self forName:[NSString stringWithFormat:@"com.milodarling.snooscreens.sub%d", i]];
+    }
+    [pool drain];
+}
+
+-(void)loadPrefs {
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
+    listenerCount = [[prefs objectForKey:@"count"] intValue];
 }
 
 @end
 
-%hook SpringBoard
-
-- (void)applicationDidFinishLaunching:(id)application {
-    %orig;
-    loadPreferences();
-    if (![prefs objectForKey:@"hasRun"]) {
-        UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:@"SnooScreens" message: @"Welcome to SnooScreens! Please visit the settings to set your subreddits, activation methods, and more." delegate:nil cancelButtonTitle:@"Cool beans!" otherButtonTitles:nil];
-        [welcomeAlert show];
-        [welcomeAlert release];
-        if (IS_OS_7_OR_UNDER) {
-            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist"];
-            [dict setObject:@YES forKey:@"hasRun"];
-            [dict writeToFile:@"/var/mobile/Library/Preferences/com.milodarling.snooscreens.plist" atomically:YES];
-        } else {
-            CFPreferencesSetAppValue ( CFSTR("hasRun"), kCFBooleanTrue, CFSTR("com.milodarling.snooscreens") );
-        }
-    }
+static void loadPreferences() {
+    [listener loadPrefs];
 }
 
-%end
+static void updateListeners() {
+    [listener updateListeners];
+}
 
 %ctor {
+    listener = [[SnooScreens alloc] init];
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
-                                NULL,
-                                (CFNotificationCallback)loadPreferences,
-                                CFSTR("com.milodarling.snooscreens/prefsChanged"),
-                                NULL,
-                                CFNotificationSuspensionBehaviorDeliverImmediately);
-    loadPreferences();
+                                    NULL,
+                                    (CFNotificationCallback)loadPreferences,
+                                    CFSTR("com.milodarling.snooscreens/prefsChanged"),
+                                    NULL,
+                                    CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
+                                    NULL,
+                                    (CFNotificationCallback)updateListeners,
+                                    CFSTR("com.milodarling.snooscreens/updateListeners"),
+                                    NULL,
+                                    CFNotificationSuspensionBehaviorDeliverImmediately);
 }
