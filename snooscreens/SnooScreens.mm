@@ -270,6 +270,14 @@ NSString *tweakName = @"SnooScreens";
 
 @implementation SSCustomCell
 
+- (id)initWithSpecifier:(id)specifier {
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell" specifier:specifier];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (CGFloat)preferredHeightForWidth:(CGFloat)arg1 {
     return 90.f;
 }
