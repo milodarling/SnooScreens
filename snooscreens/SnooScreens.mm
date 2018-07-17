@@ -1,4 +1,6 @@
 #import <Preferences/Preferences.h>
+#import <Preferences/PSEditableListController.h>
+#import <Preferences/PSTextFieldSpecifier.h>
 #import <Social/SLComposeViewController.h>
 #import <Social/SLServiceTypes.h>
 #import <objc/runtime.h>
@@ -30,7 +32,7 @@ static BOOL isTinted() {
 NSString *tweakName = @"SnooScreens";
 - (id)specifiers {
 	if(_specifiers == nil) {
-        extern NSString* PSDeletionActionKey;
+        // extern NSString* PSDeletionActionKey;
         specifiers = [[NSMutableArray alloc] init];
         PSSpecifier *spec;
         spec = [PSSpecifier emptyGroupSpecifier];
@@ -53,9 +55,9 @@ NSString *tweakName = @"SnooScreens";
             [spec setProperty:NSClassFromString(@"SSSubredditCell") forKey:@"cellClass"];
             [spec setProperty:NSStringFromSelector(@selector(removedSpecifier:)) forKey:PSDeletionActionKey];
             [specifiers addObject:spec];
-            
+
         }
-        
+
         spec = [PSSpecifier preferenceSpecifierNamed:@"Add subreddit..."
                                               target:self
                                                  set:NULL
@@ -66,11 +68,11 @@ NSString *tweakName = @"SnooScreens";
         spec->action = @selector(newSubreddit);
         [spec setProperty:NSClassFromString(@"SSTintedCell") forKey:@"cellClass"];
         [specifiers addObject:spec];
-        
+
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Saves the wallpaper you currently have set" forKey:@"footerText"];
         [specifiers addObject:spec];
-        
+
         spec = [PSSpecifier preferenceSpecifierNamed:@"Save Wallpaper"
                                               target:self
                                                  set:NULL
@@ -105,7 +107,7 @@ NSString *tweakName = @"SnooScreens";
     CGRect frame1 = CGRectMake(0, 10, width, 60);
     CGRect frame2 = CGRectMake(0, 50, width, 60);
     //CGRect frame3 = CGRectMake(0, 50, width, 60);
-    
+
     tweakName = [[UILabel alloc] initWithFrame:frame1];
     [tweakName setNumberOfLines:1];
     if (isTinted() || comicsans) {
@@ -117,7 +119,7 @@ NSString *tweakName = @"SnooScreens";
     [tweakName setBackgroundColor:[UIColor clearColor]];
     tweakName.textColor = [UIColor /*colorWithRed:99.0f/255.0f green:99.0f/255.0f blue:99.0f/255.0f alpha:1.0*/blackColor];
     tweakName.textAlignment = NSTextAlignmentCenter;
-    
+
     devName = [[UILabel alloc] initWithFrame:frame2];
     [devName setNumberOfLines:1];
     if (isTinted() || comicsans) {
@@ -129,7 +131,7 @@ NSString *tweakName = @"SnooScreens";
     [devName setBackgroundColor:[UIColor clearColor]];
     devName.textColor = [UIColor grayColor];
     devName.textAlignment = NSTextAlignmentCenter;
-    
+
     if (width<=375) {
         piracyNotice = [[UILabel alloc] initWithFrame:CGRectMake(5, 70, width-10, 80)];
         [piracyNotice setNumberOfLines:2];
@@ -147,7 +149,7 @@ NSString *tweakName = @"SnooScreens";
     [piracyNotice setBackgroundColor:[UIColor clearColor]];
     piracyNotice.textColor = [UIColor grayColor];
     piracyNotice.textAlignment = NSTextAlignmentCenter;
-    
+
     [self.table addSubview:tweakName];
     [self.table addSubview:devName];
     [self.table addSubview:piracyNotice];
@@ -264,7 +266,7 @@ NSString *tweakName = @"SnooScreens";
 @end
 
 @interface SSCustomCell : PSTableCell {
-    
+
 }
 @end
 
@@ -273,7 +275,7 @@ NSString *tweakName = @"SnooScreens";
 - (id)initWithSpecifier:(id)specifier {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell" specifier:specifier];
     if (self) {
-        
+
     }
     return self;
 }
@@ -324,22 +326,22 @@ NSString *tweakName = @"SnooScreens";
 -(void)setSpecifier:(PSSpecifier *)specifier {
     subNumber = [specifier.properties[@"subNumber"] intValue];
     [super setSpecifier:specifier];
-    
+
 }
 
 -(id)specifiers {
     if (_specifiers == nil) {
-        
+
         NSLog(@"[SnooScreens] We got called!");
         NSMutableArray *specifiers = [[NSMutableArray alloc] init];
         NSString *methodName = [NSString stringWithFormat:@"sub%d", subNumber];
-        
+
         DebugLogC(@"Creating first specifier");
         NSArray *suggestions = [NSArray arrayWithObjects:@"Need a suggestion? How about /r/EarthPorn?", @"Here's a tip: I support mulitreddits! Try /user/CastleCorp/m/find_me_wallpapers", @"Can't think of a subreddit? Why not /r/wallpaper?", @"Out of ideas? Try /r/spaceporn!", @"Need another suggestion? How does /r/CityPorn sound?", @"There's even a subreddit for wallpapers that look nice with SnooScreens! Try /r/SnooScreens!", nil];
         int randomIndex = arc4random_uniform([suggestions count]);
         PSSpecifier *spec = [PSSpecifier groupSpecifierWithHeader:[NSString stringWithFormat:@"Subreddit %d", subNumber] footer:[suggestions objectAtIndex:randomIndex]];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating second specifier");
         PSTextFieldSpecifier *textSpec = [PSTextFieldSpecifier preferenceSpecifierNamed:@"Subreddit"
                                                                                 target:self
@@ -351,9 +353,9 @@ NSString *tweakName = @"SnooScreens";
         [textSpec setProperty:@"/r/" forKey:@"default"];
         [textSpec setProperty:[NSString stringWithFormat:@"%@-subreddit", methodName] forKey:@"key"];
         [specifiers addObject:textSpec];
-        
+
         [specifiers addObject:[PSSpecifier emptyGroupSpecifier]];
-        
+
         spec = [PSSpecifier preferenceSpecifierNamed:@"Enabled"
                                               target:self
                                                  set:@selector(setPreferenceValue:specifier:)
@@ -364,14 +366,14 @@ NSString *tweakName = @"SnooScreens";
         [spec setProperty:[NSString stringWithFormat:@"%@-enabled", methodName] forKey:@"key"];
         [spec setProperty:@YES forKey:@"default"];
         [specifiers addObject:spec];
-        
-        
+
+
         DebugLogC(@"Creating third specifier");
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Pick an activation method for this subreddit." forKey:@"footerText"];
         [spec setProperty:@"PSGroupCell" forKey:@"cell"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating fourth specifier");
         spec = [PSSpecifier preferenceSpecifierNamed:@"Activation Method"
                                               target:self
@@ -385,13 +387,13 @@ NSString *tweakName = @"SnooScreens";
         [spec setProperty:@"/System/Library/PreferenceBundles/LibActivator.bundle" forKey:@"lazy-bundle"];
         spec->action = @selector(lazyLoadBundle:);
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating fifth specifier");
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Apply to home screen, lock screen, or both." forKey:@"footerText"];
         [spec setProperty:@"PSGroupCell" forKey:@"cell"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating sixth specifier");
         spec = [PSSpecifier preferenceSpecifierNamed:@"Set to"
                                               target:self
@@ -406,13 +408,13 @@ NSString *tweakName = @"SnooScreens";
         //spec->_values = [NSArray arrayWithObjects:@"1", @"2", @"0", nil];
         [spec setProperty:@"0" forKey:@"default"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating seventh specifier");
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Allow NSFW images to be saved & set as your wallpaper." forKey:@"footerText"];
         [spec setProperty:@"PSGroupCell" forKey:@"cell"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating eighth specifier");
         spec = [PSSpecifier preferenceSpecifierNamed:@"Allow NSFW images"
                                               target:self
@@ -424,13 +426,13 @@ NSString *tweakName = @"SnooScreens";
         [spec setProperty:[NSString stringWithFormat:@"%@-allowBoobies", methodName] forKey:@"key"];
         [spec setProperty:@NO forKey:@"default"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating ninth specifier");
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Save the photo to your photo library after setting it as your wallpaper." forKey:@"footerText"];
         [spec setProperty:@"PSGroupCell" forKey:@"cell"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating tenth specifier");
         spec = [PSSpecifier preferenceSpecifierNamed:@"Save photo"
                                               target:self
@@ -442,13 +444,13 @@ NSString *tweakName = @"SnooScreens";
         [spec setProperty:[NSString stringWithFormat:@"%@-savePhoto", methodName] forKey:@"key"];
         [spec setProperty:@NO forKey:@"default"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating eleventh specifier");
         spec = [PSSpecifier emptyGroupSpecifier];
         [spec setProperty:@"Use a random image. If this is disabled, the top image will be grabbed." forKey:@"footerText"];
         [spec setProperty:@"PSGroupCell" forKey:@"cell"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating twelfth specifier");
         spec = [PSSpecifier preferenceSpecifierNamed:@"Random image"
                                               target:self
@@ -460,7 +462,7 @@ NSString *tweakName = @"SnooScreens";
         [spec setProperty:[NSString stringWithFormat:@"%@-random", methodName] forKey:@"key"];
         [spec setProperty:@NO forKey:@"default"];
         [specifiers addObject:spec];
-        
+
         DebugLogC(@"Creating _specifiers");
         _specifiers = [[specifiers copy] retain];
     }
@@ -522,9 +524,9 @@ NSString *tweakName = @"SnooScreens";
         _background = [[UIImageView alloc] initWithImage:bkIm];
         _background.frame = CGRectMake(10, 15, 70, 70);
         [self addSubview:_background];
-        
+
         CGRect frame = [self frame];
-        
+
         devName = [[UILabel alloc] initWithFrame:CGRectMake(frame.origin.x + 95, frame.origin.y + 10, frame.size.width, frame.size.height)];
         [devName setText:@"Milo Darling"];
         [devName setBackgroundColor:[UIColor clearColor]];
@@ -533,23 +535,23 @@ NSString *tweakName = @"SnooScreens";
             [devName setFont:[UIFont fontWithName:@"Helvetica Light" size:30]];
         else
             [devName setFont:[UIFont fontWithName:@"Helvetica Light" size:23]];
-        
+
         [self addSubview:devName];
-        
+
         devRealName = [[UILabel alloc] initWithFrame:CGRectMake(frame.origin.x + 95, frame.origin.y + 30, frame.size.width, frame.size.height)];
         [devRealName setText:@"The Creator"];
         [devRealName setTextColor:[UIColor grayColor]];
         [devRealName setBackgroundColor:[UIColor clearColor]];
         [devRealName setFont:[UIFont fontWithName:@"Helvetica Light" size:15]];
-        
+
         [self addSubview:devRealName];
-        
+
         jobSubtitle = [[UILabel alloc] initWithFrame:CGRectMake(frame.origin.x + 95, frame.origin.y + 50, frame.size.width, frame.size.height)];
         [jobSubtitle setText:@"@JamesIscNeutron"];
         [jobSubtitle setTextColor:[UIColor grayColor]];
         [jobSubtitle setBackgroundColor:[UIColor clearColor]];
         [jobSubtitle setFont:[UIFont fontWithName:@"Helvetica Light" size:15]];
-        
+
         [self addSubview:jobSubtitle];
     }
     return self;
