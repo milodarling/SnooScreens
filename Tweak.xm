@@ -2,8 +2,8 @@
 #import <SpringBoard/SpringBoard.h>
 #import <SpringBoardFoundation/SBFWallpaperParallaxSettings.h>
 #import <UIKit/UIKit.h>
-#import "/usr/include/objc/runtime.h"
-#import <libactivator/libactivator.h>
+#import <objc/runtime.h>
+#import "libactivator.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #define DEBUG
 #import "DebugLog.h"
@@ -14,6 +14,7 @@
     NSString *imgurLink;
     BOOL isNSFW;
 }
+- (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event;
 @end
 
 SnooScreens *listener;
@@ -42,7 +43,7 @@ static inline int FPWListenerName(NSString *listenerName) {
 }
 
 -(void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event forListenerName:(NSString *)listenerName {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
          NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:settingsPath];
         //COLLECT PREFERENCES ETC
         int en = FPWListenerName(listenerName);
@@ -57,7 +58,7 @@ static inline int FPWListenerName(NSString *listenerName) {
         NSString *subreddit = [prefs objectForKey:[NSString stringWithFormat:@"%@subreddit", mode]] ?: @"No subreddit chosen";
         BOOL allowBoobies = [[prefs objectForKey:[NSString stringWithFormat:@"%@allowBoobies", mode]] boolValue];
         wallpaperMode = [[prefs objectForKey:[NSString stringWithFormat:@"%@wallpaperMode", mode]] intValue] ?: 0;
-    
+
         //PARSE URL
         subreddit = [subreddit stringByReplacingOccurrencesOfString:@" " withString:@""];
         DebugLogC(@"Subreddit: %@", subreddit);
@@ -122,7 +123,7 @@ static inline int FPWListenerName(NSString *listenerName) {
                 }
             }
         }
-    
+
         if (!(([imgurLink rangeOfString:@"imgur.com"].location != NSNotFound) && ([imgurLink rangeOfString:@"/a/"].location == NSNotFound) && (!isNSFW || allowBoobies))) {
             UIAlertView *alert2 = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@", tweakName]
                                                              message:[NSString stringWithFormat:@"I didn't find any images that meet your criteria on the front page of %@.", subreddit]
@@ -139,7 +140,7 @@ static inline int FPWListenerName(NSString *listenerName) {
         //save as a preference so we don't reuse the same image.
         [self setPreferenceObject:imgurLink forKey:@"currentRedditLink"];
         DebugLogC(@"Final link: %@", [prefs objectForKey:@"currentRedditLink"]);
-        
+
         //Convert imgur.com links to i.imgur.com
         NSString *finalLink = @"";
         if ([imgurLink rangeOfString:@"i.imgur.com"].location == NSNotFound) {
@@ -174,11 +175,11 @@ static inline int FPWListenerName(NSString *listenerName) {
             [alert3 release];
         }
         UIImage *rawImage = [UIImage imageWithData:data];
-    
+
         //CROP IMAGE
         CGSize screenSize = [SBFWallpaperParallaxSettings minimumWallpaperSizeForCurrentDevice];
         float ratio = screenSize.height/screenSize.width;
-    
+
         CGRect rect;
         if ((rawImage.size.height/rawImage.size.width)>ratio) {
             rect = CGRectMake(0.0f,
@@ -191,33 +192,33 @@ static inline int FPWListenerName(NSString *listenerName) {
                               (rawImage.size.height/ratio),
                               rawImage.size.height);
         }
-    
+
         CGImageRef imageRef = CGImageCreateWithImageInRect([rawImage CGImage], rect);
         UIImage *image = [[[UIImage alloc] initWithCGImage:imageRef] autorelease];
         CGImageRelease(imageRef);
-    
+
         //SET WALLPAPER
         NSLog(@"[SnooScreens] Setting wallpaper");
         PLStaticWallpaperImageViewController *wallpaperViewController = [[[PLStaticWallpaperImageViewController alloc] initWithUIImage:image] autorelease];
         wallpaperViewController.saveWallpaperData = YES;
-        
+
         uintptr_t address = (uintptr_t)&wallpaperMode;
         object_setInstanceVariable(wallpaperViewController, "_wallpaperMode", *(PLWallpaperMode **)address);
-        
+
         [wallpaperViewController _savePhoto];
-        
+
         if ([[prefs objectForKey:[NSString stringWithFormat:@"%@savePhoto", mode]] boolValue]) {
             UIImageWriteToSavedPhotosAlbum(rawImage, nil, nil, nil);
         }
         //NSLog(@"[%@] Releasing image :)", tweakName);
         //[image release];
-        
+
         //isRunning = NO;
-        
+
         //completion(nil);
         [self loadPrefs];
-    });
-    
+    // });
+
 }
 
 - (NSString *)activator:(LAActivator *)activator requiresLocalizedGroupForListenerName:(NSString *)listenerName {
